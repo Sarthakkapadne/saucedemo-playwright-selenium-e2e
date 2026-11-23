@@ -4,6 +4,8 @@ Validates end-to-end checkout, input validations, and cancellation handling via 
 """
 import pytest
 import allure
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from pages.selenium_pages.login_selenium_page import LoginSeleniumPage
 from pages.selenium_pages.inventory_selenium_page import InventorySeleniumPage
 from pages.selenium_pages.cart_selenium_page import CartSeleniumPage
@@ -45,7 +47,7 @@ class TestCheckoutSelenium:
             self.step_one.click_continue()
 
         with allure.step("Verify step two calculations and finish order"):
-            assert "/checkout-step-two.html" in selenium_driver.current_url
+            WebDriverWait(selenium_driver, 10).until(EC.url_contains("checkout-step-two.html"))
             subtotal = self.step_two.get_subtotal()
             tax = self.step_two.get_tax()
             total = self.step_two.get_total()
@@ -53,7 +55,7 @@ class TestCheckoutSelenium:
             self.step_two.click_finish()
 
         with allure.step("Assert order complete message"):
-            assert "/checkout-complete.html" in selenium_driver.current_url
+            WebDriverWait(selenium_driver, 10).until(EC.url_contains("checkout-complete.html"))
             assert self.complete_page.is_order_successful()
 
     @allure.title("TC-E2E-24: Selenium Missing Last Name Validation")
@@ -84,9 +86,9 @@ class TestCheckoutSelenium:
             self.step_one.click_continue()
 
         with allure.step("Click Cancel button at Step Two"):
-            assert "/checkout-step-two.html" in selenium_driver.current_url
+            WebDriverWait(selenium_driver, 10).until(EC.url_contains("checkout-step-two.html"))
             self.step_two.click_cancel()
 
         with allure.step("Assert returned to products inventory"):
-            assert "/inventory.html" in selenium_driver.current_url
+            WebDriverWait(selenium_driver, 10).until(EC.url_contains("inventory.html"))
             assert self.inventory_page.get_items_count() == 6

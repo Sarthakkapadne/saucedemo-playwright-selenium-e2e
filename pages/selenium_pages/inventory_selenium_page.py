@@ -4,6 +4,7 @@ Selenium Inventory Page Object.
 from typing import List
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support import expected_conditions as EC
 from pages.selenium_pages.base_selenium_page import BaseSeleniumPage
 
 
@@ -43,6 +44,7 @@ class InventorySeleniumPage(BaseSeleniumPage):
 
     def open_cart(self):
         self.click(*self.CART_LINK)
+        self.wait.until(EC.url_contains("/cart.html"))
 
     def select_sort(self, sort_value: str):
         dropdown = Select(self.find(*self.SORT_DROPDOWN))
